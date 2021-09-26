@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fauzanmh/online-store/pkg/util"
+	"github.com/fauzanmh/olp-admin/pkg/util"
 	"github.com/spf13/viper"
 	log "go.uber.org/zap"
 )
@@ -20,14 +20,13 @@ type Config struct {
 		Timeout int `mapstructure:"timeout"`
 	} `mapstructure:"context"`
 	Database struct {
-		Pg struct {
+		Mysql struct {
 			Host     string `mapstructure:"host"`
 			Port     string `mapstructure:"port"`
 			User     string `mapstructure:"user"`
 			Password string `mapstructure:"password"`
 			Dbname   string `mapstructure:"dbname"`
-			SslMode  string `mapstructure:"sslmode"`
-		} `mapstructure:"pg"`
+		} `mapstructure:"mysql"`
 	} `mapstructure:"database"`
 }
 

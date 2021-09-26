@@ -3,21 +3,21 @@ package util
 import (
 	"fmt"
 
-	"github.com/fauzanmh/online-store/pkg/helper"
+	"github.com/fauzanmh/olp-admin/pkg/helper"
 	"github.com/go-playground/validator/v10"
 	"github.com/lib/pq"
 )
 
 func errorType(err error) (int, error) {
 	switch {
-	case isPqError(err):
+	case isMysqlError(err):
 		return helper.PqError(err)
 	}
 	return helper.CommonError(err)
 }
 
-// * isPqError used to check error if error is pg error
-func isPqError(err error) bool {
+// * isMysqlError used to check error if error is mysql error
+func isMysqlError(err error) bool {
 	if _, ok := err.(*pq.Error); ok {
 		return true
 	}

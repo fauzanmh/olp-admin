@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/fauzanmh/online-store/constant"
-	"github.com/fauzanmh/online-store/schema/response"
+	"github.com/fauzanmh/olp-admin/constant"
+	response "github.com/fauzanmh/olp-admin/schema"
 	"github.com/labstack/echo/v4"
 	log "go.uber.org/zap"
 )

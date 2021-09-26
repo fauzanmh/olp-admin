@@ -3,7 +3,7 @@ package config
 import (
 	"net/http"
 
-	"github.com/fauzanmh/online-store/pkg/util"
+	"github.com/fauzanmh/olp-admin/pkg/util"
 	"github.com/labstack/echo/v4"
 )
 

@@ -5,21 +5,17 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"sync"
 	"time"
 
-	"github.com/fauzanmh/online-store/config"
+	"github.com/fauzanmh/olp-admin/config"
+	_handler "github.com/fauzanmh/olp-admin/handler"
+	_mysqlRepo "github.com/fauzanmh/olp-admin/repository/mysql"
+	_usecaseCourse "github.com/fauzanmh/olp-admin/usecase/course"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
-	_orderHttp "github.com/fauzanmh/online-store/module/order/handler/http"
-	_order "github.com/fauzanmh/online-store/module/order/usecase"
-	_productHttp "github.com/fauzanmh/online-store/module/product/handler/http"
-	_product "github.com/fauzanmh/online-store/module/product/usecase"
-	_pgRepo "github.com/fauzanmh/online-store/repository/pg"
-
-	appInit "github.com/fauzanmh/online-store/init"
-	appMiddleware "github.com/fauzanmh/online-store/middleware"
+	appInit "github.com/fauzanmh/olp-admin/init"
+	appMiddleware "github.com/fauzanmh/olp-admin/middleware"
 	_ "github.com/spf13/viper/remote"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	log "go.uber.org/zap"
@@ -37,25 +33,24 @@ func main() {
 	e := echo.New()
 
 	// mutex
-	var mtx sync.Mutex
 
 	// timeout
 	timeoutContext := time.Duration(cfg.Context.Timeout) * time.Second
 
 	// init database
-	pgDb, err := appInit.ConnectToPGServer(cfg)
+	mysqlDB, err := appInit.ConnectToMysqlServer(cfg)
 	if err != nil {
 		log.S().Fatal(err)
 	}
 
 	// init repository
-	pgRepo := _pgRepo.NewRepository(pgDb)
+	mysqlRepo := _mysqlRepo.NewRepository(mysqlDB)
 
 	// init usecase
 	// product usecase
-	productUc := _product.NewProductUseCase(cfg, pgRepo)
+
 	// order usecase
-	orderUc := _order.NewOrderUseCase(cfg, &mtx, pgRepo)
+	courseUsecase := _usecaseCourse.NewCourseUseCase(cfg, mysqlRepo)
 
 	// Middleware
 	e.Use(appMiddleware.EchoCORS())
@@ -70,9 +65,7 @@ func main() {
 	// swagger route
 	routerAPI.GET("/swagger/*", echoSwagger.WrapHandler)
 	// order routes
-	_orderHttp.NewOrderHandler(routerAPI, orderUc)
-	// product routes
-	_productHttp.NewProductHandler(routerAPI, productUc)
+	_handler.NewCourseHandler(routerAPI, courseUsecase)
 
 	go runHTTPHandler(e, cfg)
 
