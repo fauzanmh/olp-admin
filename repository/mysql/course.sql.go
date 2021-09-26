@@ -6,6 +6,40 @@ import (
 	"github.com/fauzanmh/olp-admin/entity"
 )
 
+const getAllCourses = `-- name: GetAllCourses :many
+SELECT id, course_category_id, name, description, price
+FROM courses
+`
+
+func (q *Queries) GetAllCourses(ctx context.Context) ([]entity.GetAllCoursesRow, error) {
+	rows, err := q.query(ctx, q.getAllCoursesStmt, getAllCourses)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []entity.GetAllCoursesRow{}
+	for rows.Next() {
+		var i entity.GetAllCoursesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CourseCategoryID,
+			&i.Name,
+			&i.Description,
+			&i.Price,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const createCourse = `-- name: CreateCourse :exec
 INSERT INTO courses (course_category_id, name, description, price, created_at, updated_at)
 VALUES (?, ?, ?, ?, ?, ?)

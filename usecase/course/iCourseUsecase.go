@@ -7,6 +7,7 @@ import (
 )
 
 type Usecase interface {
+	Get(ctx context.Context) (res []course.GetAllCoursesResponse, err error)
 	Create(ctx context.Context, req *course.CourseCreateRequest) (err error)
 	Update(ctx context.Context, req *course.CourseUpdateRequest) (err error)
 }

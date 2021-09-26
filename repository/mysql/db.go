@@ -23,6 +23,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.createCourseStmt, err = db.PrepareContext(ctx, createCourse); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateCourse: %w", err)
 	}
+	if q.getAllCoursesStmt, err = db.PrepareContext(ctx, getAllCourses); err != nil {
+		return nil, fmt.Errorf("error preparing query GetAllCourses: %w", err)
+	}
 	if q.updateCourseStmt, err = db.PrepareContext(ctx, updateCourse); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateCourse: %w", err)
 	}
@@ -34,6 +37,11 @@ func (q *Queries) Close() error {
 	if q.createCourseStmt != nil {
 		if cerr := q.createCourseStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing createCourseStmt: %w", cerr)
+		}
+	}
+	if q.getAllCoursesStmt != nil {
+		if cerr := q.getAllCoursesStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getAllCoursesStmt: %w", cerr)
 		}
 	}
 	if q.updateCourseStmt != nil {
@@ -78,17 +86,19 @@ func (q *Queries) queryRow(ctx context.Context, stmt *sql.Stmt, query string, ar
 }
 
 type Queries struct {
-	db               DBTX
-	tx               *sql.Tx
-	createCourseStmt *sql.Stmt
-	updateCourseStmt *sql.Stmt
+	db                DBTX
+	tx                *sql.Tx
+	createCourseStmt  *sql.Stmt
+	getAllCoursesStmt *sql.Stmt
+	updateCourseStmt  *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 	return &Queries{
-		db:               tx,
-		tx:               tx,
-		createCourseStmt: q.createCourseStmt,
-		updateCourseStmt: q.updateCourseStmt,
+		db:                tx,
+		tx:                tx,
+		createCourseStmt:  q.createCourseStmt,
+		getAllCoursesStmt: q.getAllCoursesStmt,
+		updateCourseStmt:  q.updateCourseStmt,
 	}
 }

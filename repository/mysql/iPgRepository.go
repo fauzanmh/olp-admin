@@ -10,6 +10,7 @@ import (
 type Repository interface {
 	// Courses
 	CreateCourse(ctx context.Context, args *entity.CreateCourseParams) (err error)
+	GetAllCourses(ctx context.Context) ([]entity.GetAllCoursesRow, error)
 	UpdateCourse(ctx context.Context, arg *entity.UpdateCourseParams) error
 
 	//Tx
