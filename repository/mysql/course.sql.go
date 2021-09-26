@@ -22,3 +22,20 @@ func (q *Queries) CreateCourse(ctx context.Context, arg *entity.CreateCoursePara
 	)
 	return err
 }
+
+const updateCourse = `-- name: UpdateCourse :exec
+UPDATE courses SET course_category_id = ?, name = ?, description = ?, price = ?, updated_at = ?
+WHERE id = ?
+`
+
+func (q *Queries) UpdateCourse(ctx context.Context, arg *entity.UpdateCourseParams) error {
+	_, err := q.exec(ctx, q.updateCourseStmt, updateCourse,
+		arg.CourseCategoryID,
+		arg.Name,
+		arg.Description,
+		arg.Price,
+		arg.UpdatedAt,
+		arg.ID,
+	)
+	return err
+}

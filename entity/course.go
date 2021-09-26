@@ -15,6 +15,8 @@ type Course struct {
 	DeletedAt        sql.NullInt64 `json:"deleted_at"`
 }
 
+// --- params and rows --- //
+
 type CreateCourseParams struct {
 	CourseCategoryID int32         `json:"course_category_id"`
 	Name             string        `json:"name"`
@@ -22,4 +24,13 @@ type CreateCourseParams struct {
 	Price            string        `json:"price"`
 	CreatedAt        int64         `json:"created_at"`
 	UpdatedAt        sql.NullInt64 `json:"updated_at"`
+}
+
+type UpdateCourseParams struct {
+	CourseCategoryID int32         `json:"course_category_id"`
+	Name             string        `json:"name"`
+	Description      string        `json:"description"`
+	Price            string        `json:"price"`
+	UpdatedAt        sql.NullInt64 `json:"updated_at"`
+	ID               int64         `json:"id"`
 }
