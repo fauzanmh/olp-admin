@@ -35,6 +35,12 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getOneCourseCategoryStmt, err = db.PrepareContext(ctx, getOneCourseCategory); err != nil {
 		return nil, fmt.Errorf("error preparing query GetOneCourseCategory: %w", err)
 	}
+	if q.getTotalCourseStmt, err = db.PrepareContext(ctx, getTotalCourse); err != nil {
+		return nil, fmt.Errorf("error preparing query GetTotalCourse: %w", err)
+	}
+	if q.getTotalCourseIsFreeStmt, err = db.PrepareContext(ctx, getTotalCourseIsFree); err != nil {
+		return nil, fmt.Errorf("error preparing query GetTotalCourseIsFree: %w", err)
+	}
 	if q.updateCourseStmt, err = db.PrepareContext(ctx, updateCourse); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateCourse: %w", err)
 	}
@@ -66,6 +72,16 @@ func (q *Queries) Close() error {
 	if q.getOneCourseCategoryStmt != nil {
 		if cerr := q.getOneCourseCategoryStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getOneCourseCategoryStmt: %w", cerr)
+		}
+	}
+	if q.getTotalCourseStmt != nil {
+		if cerr := q.getTotalCourseStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getTotalCourseStmt: %w", cerr)
+		}
+	}
+	if q.getTotalCourseIsFreeStmt != nil {
+		if cerr := q.getTotalCourseIsFreeStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getTotalCourseIsFreeStmt: %w", cerr)
 		}
 	}
 	if q.updateCourseStmt != nil {
@@ -117,6 +133,8 @@ type Queries struct {
 	getAllCoursesStmt        *sql.Stmt
 	getOneCourseStmt         *sql.Stmt
 	getOneCourseCategoryStmt *sql.Stmt
+	getTotalCourseStmt       *sql.Stmt
+	getTotalCourseIsFreeStmt *sql.Stmt
 	updateCourseStmt         *sql.Stmt
 }
 
@@ -129,6 +147,8 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getAllCoursesStmt:        q.getAllCoursesStmt,
 		getOneCourseStmt:         q.getOneCourseStmt,
 		getOneCourseCategoryStmt: q.getOneCourseCategoryStmt,
+		getTotalCourseStmt:       q.getTotalCourseStmt,
+		getTotalCourseIsFreeStmt: q.getTotalCourseIsFreeStmt,
 		updateCourseStmt:         q.updateCourseStmt,
 	}
 }

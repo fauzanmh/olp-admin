@@ -18,6 +18,10 @@ type Repository interface {
 	// Course Category
 	GetOneCourseCategory(ctx context.Context, id int32) (entity.GetOneCourseCategoryRow, error)
 
+	// Statistic
+	GetTotalCourse(ctx context.Context) (int64, error)
+	GetTotalCourseIsFree(ctx context.Context) (int64, error)
+
 	//Tx
 	BeginTx(ctx context.Context) (*sql.Tx, error)
 	WithTx(tx *sql.Tx) *Queries
