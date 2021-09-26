@@ -4,6 +4,7 @@ import (
 	"database/sql"
 )
 
+// model
 type Course struct {
 	ID               int64         `json:"id"`
 	CourseCategoryID int32         `json:"course_category_id"`

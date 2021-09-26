@@ -28,10 +28,10 @@ func PqError(err error) (int, error) {
 }
 
 var commonErrorMap = map[error]int{
-	constant.ErrorMysqlUserAlreadyExists:   http.StatusConflict,
-	constant.ErrorMysqlUserNotFound:        http.StatusNotFound,
-	constant.ErrorMysqlDataNotFound:        http.StatusBadRequest,
-	constant.ErrorMessageProductOutOfStock: http.StatusBadRequest,
+	constant.ErrorMysqlUserAlreadyExists:        http.StatusConflict,
+	constant.ErrorMysqlUserNotFound:             http.StatusNotFound,
+	constant.ErrorMysqlDataNotFound:             http.StatusBadRequest,
+	constant.ErrorMessageCourseCategoryNotFound: http.StatusBadRequest,
 }
 
 // CommonError is
@@ -43,8 +43,8 @@ func CommonError(err error) (int, error) {
 		return commonErrorMap[constant.ErrorMysqlUserNotFound], constant.ErrorMysqlUserNotFound
 	case constant.ErrorMysqlDataNotFound:
 		return commonErrorMap[constant.ErrorMysqlDataNotFound], constant.ErrorMysqlDataNotFound
-	case constant.ErrorMessageProductOutOfStock:
-		return commonErrorMap[constant.ErrorMessageProductOutOfStock], constant.ErrorMessageProductOutOfStock
+	case constant.ErrorMessageCourseCategoryNotFound:
+		return commonErrorMap[constant.ErrorMessageCourseCategoryNotFound], constant.ErrorMessageCourseCategoryNotFound
 	}
 
 	return http.StatusInternalServerError, fmt.Errorf("internal error")
