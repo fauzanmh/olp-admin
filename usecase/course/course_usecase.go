@@ -47,6 +47,12 @@ func (u *usecase) Get(ctx context.Context) (res []course.GetAllCoursesResponse, 
 
 // --- create course --- ///
 func (u *usecase) Create(ctx context.Context, req *course.CourseCreateRequest) (err error) {
+	// check if course category is exists
+	_, err = u.mysqlRepo.GetOneCourseCategory(ctx, req.CourseCategoryID)
+	if err != nil {
+		return
+	}
+
 	// arguments
 	createCourseParams := &entity.CreateCourseParams{
 		CourseCategoryID: req.CourseCategoryID,
