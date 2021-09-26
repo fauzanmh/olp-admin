@@ -8,4 +8,5 @@ import (
 
 type Usecase interface {
 	Create(ctx context.Context, req *course.CourseCreateRequest) (err error)
+	Update(ctx context.Context, req *course.CourseUpdateRequest) (err error)
 }

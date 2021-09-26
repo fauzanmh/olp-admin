@@ -23,6 +23,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.createCourseStmt, err = db.PrepareContext(ctx, createCourse); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateCourse: %w", err)
 	}
+	if q.updateCourseStmt, err = db.PrepareContext(ctx, updateCourse); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateCourse: %w", err)
+	}
 	return &q, nil
 }
 
@@ -31,6 +34,11 @@ func (q *Queries) Close() error {
 	if q.createCourseStmt != nil {
 		if cerr := q.createCourseStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing createCourseStmt: %w", cerr)
+		}
+	}
+	if q.updateCourseStmt != nil {
+		if cerr := q.updateCourseStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateCourseStmt: %w", cerr)
 		}
 	}
 	return err
@@ -73,6 +81,7 @@ type Queries struct {
 	db               DBTX
 	tx               *sql.Tx
 	createCourseStmt *sql.Stmt
+	updateCourseStmt *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
@@ -80,5 +89,6 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		db:               tx,
 		tx:               tx,
 		createCourseStmt: q.createCourseStmt,
+		updateCourseStmt: q.updateCourseStmt,
 	}
 }
