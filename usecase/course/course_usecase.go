@@ -23,6 +23,28 @@ func NewCourseUseCase(config *appInit.Config, mysqlRepo mysqlRepo.Repository) Us
 	}
 }
 
+// --- get all course --- ///
+func (u *usecase) Get(ctx context.Context) (res []course.GetAllCoursesResponse, err error) {
+	// get from database
+	data, err := u.mysqlRepo.GetAllCourses(ctx)
+	if err != nil {
+		return
+	}
+
+	// convert from entity to schema
+	for idx := range data {
+		res = append(res, course.GetAllCoursesResponse{
+			ID:               data[idx].ID,
+			CourseCategoryID: data[idx].CourseCategoryID,
+			Name:             data[idx].Name,
+			Description:      data[idx].Description,
+			Price:            data[idx].Price,
+		})
+	}
+
+	return
+}
+
 // --- create course --- ///
 func (u *usecase) Create(ctx context.Context, req *course.CourseCreateRequest) (err error) {
 	// arguments

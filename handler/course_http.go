@@ -17,14 +17,38 @@ func NewCourseHandler(e *echo.Group, uc usecaseCourse.Usecase) {
 	}
 
 	routerV1 := e.Group("/v1")
+	routerV1.GET("/course", handler.Get)
 	routerV1.POST("/course", handler.Create)
 	routerV1.PUT("/course/:id", handler.Update)
+}
+
+// Get godoc
+// @Summary Get All Courses
+// @Description Get All Courses
+// @Tags Course
+// @Accept json
+// @Produce json
+// @Success 200 {object} schema.SwaggerGetAllCoursesResponse
+// @Failure 400 {object} schema.Base
+// @Failure 401 {object} schema.Base
+// @Failure 404 {object} schema.Base
+// @Failure 500 {object} schema.Base
+// @Router /v1/course [get]
+func (h *CourseHandler) Get(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	data, err := h.usecase.Get(ctx)
+	if err != nil {
+		return util.ErrorResponse(c, err, nil)
+	}
+
+	return util.SuccessResponse(c, "success get courses", data)
 }
 
 // Create godoc
 // @Summary Create Course
 // @Description Create a new course
-// @Tags Order
+// @Tags Course
 // @Accept json
 // @Produce json
 // @Param request body course.CourseCreateRequest{} true "Request Body"
@@ -60,8 +84,8 @@ func (h *CourseHandler) Create(c echo.Context) error {
 
 // Update godoc
 // @Summary Update Course
-// @Description Update a new course
-// @Tags Order
+// @Description Update course
+// @Tags Course
 // @Accept json
 // @Produce json
 // @Param id path int true "ID of Course"
