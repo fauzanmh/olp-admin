@@ -85,3 +85,25 @@ func (u *usecase) Update(ctx context.Context, req *course.CourseUpdateRequest) (
 
 	return
 }
+
+// --- delete course --- ///
+func (u *usecase) Delete(ctx context.Context, req *course.CourseDeleteRequest) (err error) {
+	// check if course is exists
+	_, err = u.mysqlRepo.GetOneCourse(ctx, req.ID)
+	if err != nil {
+		return
+	}
+
+	// arguments
+	deleteCourseParams := &entity.DeleteCourseParams{
+		ID:        req.ID,
+		DeletedAt: sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
+	}
+
+	err = u.mysqlRepo.DeleteCourse(ctx, deleteCourseParams)
+	if err != nil {
+		return
+	}
+
+	return
+}

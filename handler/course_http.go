@@ -20,6 +20,7 @@ func NewCourseHandler(e *echo.Group, uc usecaseCourse.Usecase) {
 	routerV1.GET("/course", handler.Get)
 	routerV1.POST("/course", handler.Create)
 	routerV1.PUT("/course/:id", handler.Update)
+	routerV1.DELETE("/course/:id", handler.Delete)
 }
 
 // Get godoc
@@ -118,4 +119,41 @@ func (h *CourseHandler) Update(c echo.Context) error {
 	}
 
 	return util.SuccessResponse(c, "success update course", nil)
+}
+
+// Delete godoc
+// @Summary Delete Course
+// @Description Delete course
+// @Tags Course
+// @Accept json
+// @Produce json
+// @Param id path int true "ID of Course"
+// @Success 200 {object} schema.Base
+// @Failure 400 {object} schema.Base
+// @Failure 401 {object} schema.Base
+// @Failure 404 {object} schema.Base
+// @Failure 500 {object} schema.Base
+// @Router /v1/course/{id} [delete]
+func (h *CourseHandler) Delete(c echo.Context) error {
+	req := course.CourseDeleteRequest{}
+	ctx := c.Request().Context()
+
+	// parsing
+	err := util.ParsingParameter(c, &req)
+	if err != nil {
+		return util.ErrorParsing(c, err, nil)
+	}
+
+	// validate
+	err = util.ValidateParameter(c, &req)
+	if err != nil {
+		return util.ErrorValidate(c, err, nil)
+	}
+
+	err = h.usecase.Delete(ctx, &req)
+	if err != nil {
+		return util.ErrorResponse(c, err, nil)
+	}
+
+	return util.SuccessResponse(c, "success delete course", nil)
 }
