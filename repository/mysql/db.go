@@ -44,6 +44,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.updateCourseStmt, err = db.PrepareContext(ctx, updateCourse); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateCourse: %w", err)
 	}
+	if q.updateTotalUsedStmt, err = db.PrepareContext(ctx, updateTotalUsed); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateTotalUsed: %w", err)
+	}
 	return &q, nil
 }
 
@@ -87,6 +90,11 @@ func (q *Queries) Close() error {
 	if q.updateCourseStmt != nil {
 		if cerr := q.updateCourseStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing updateCourseStmt: %w", cerr)
+		}
+	}
+	if q.updateTotalUsedStmt != nil {
+		if cerr := q.updateTotalUsedStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateTotalUsedStmt: %w", cerr)
 		}
 	}
 	return err
@@ -136,6 +144,7 @@ type Queries struct {
 	getTotalCourseStmt       *sql.Stmt
 	getTotalCourseIsFreeStmt *sql.Stmt
 	updateCourseStmt         *sql.Stmt
+	updateTotalUsedStmt      *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
@@ -150,5 +159,6 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		getTotalCourseStmt:       q.getTotalCourseStmt,
 		getTotalCourseIsFreeStmt: q.getTotalCourseIsFreeStmt,
 		updateCourseStmt:         q.updateCourseStmt,
+		updateTotalUsedStmt:      q.updateTotalUsedStmt,
 	}
 }

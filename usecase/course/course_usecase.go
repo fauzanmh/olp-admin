@@ -25,6 +25,8 @@ func NewCourseUseCase(config *appInit.Config, mysqlRepo mysqlRepo.Repository) Us
 
 // --- get all course --- ///
 func (u *usecase) Get(ctx context.Context) (res []course.GetAllCoursesResponse, err error) {
+	res = []course.GetAllCoursesResponse{}
+
 	// get from database
 	data, err := u.mysqlRepo.GetAllCourses(ctx)
 	if err != nil {
@@ -47,9 +49,16 @@ func (u *usecase) Get(ctx context.Context) (res []course.GetAllCoursesResponse, 
 
 // --- create course --- ///
 func (u *usecase) Create(ctx context.Context, req *course.CourseCreateRequest) (err error) {
-	// check if course category is exists
-	_, err = u.mysqlRepo.GetOneCourseCategory(ctx, req.CourseCategoryID)
+	// begin transactions
+	tx, err := u.mysqlRepo.BeginTx(ctx)
 	if err != nil {
+		return
+	}
+
+	// check if course category is exists
+	_, err = u.mysqlRepo.WithTx(tx).GetOneCourseCategory(ctx, req.CourseCategoryID)
+	if err != nil {
+		u.mysqlRepo.RollbackTx(tx)
 		return
 	}
 
@@ -64,10 +73,21 @@ func (u *usecase) Create(ctx context.Context, req *course.CourseCreateRequest) (
 	}
 
 	// store to database
-	err = u.mysqlRepo.CreateCourse(ctx, createCourseParams)
+	err = u.mysqlRepo.WithTx(tx).CreateCourse(ctx, createCourseParams)
 	if err != nil {
+		u.mysqlRepo.RollbackTx(tx)
 		return
 	}
+
+	// update total_used on table course category
+	err = u.mysqlRepo.WithTx(tx).UpdateTotalUsed(ctx, req.CourseCategoryID)
+	if err != nil {
+		u.mysqlRepo.RollbackTx(tx)
+		return
+	}
+
+	// commit transactions
+	u.mysqlRepo.CommitTx(tx)
 
 	return
 }
