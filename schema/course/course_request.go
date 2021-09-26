@@ -14,3 +14,7 @@ type CourseUpdateRequest struct {
 	Price            string `json:"price" validate:"required"`
 	CourseCategoryID int32  `json:"course_category_id" validate:"required"`
 }
+
+type CourseDeleteRequest struct {
+	ID int64 `param:"id" json:"-" validate:"required"`
+}

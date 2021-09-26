@@ -23,8 +23,14 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.createCourseStmt, err = db.PrepareContext(ctx, createCourse); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateCourse: %w", err)
 	}
+	if q.deleteCourseStmt, err = db.PrepareContext(ctx, deleteCourse); err != nil {
+		return nil, fmt.Errorf("error preparing query DeleteCourse: %w", err)
+	}
 	if q.getAllCoursesStmt, err = db.PrepareContext(ctx, getAllCourses); err != nil {
 		return nil, fmt.Errorf("error preparing query GetAllCourses: %w", err)
+	}
+	if q.getOneCourseStmt, err = db.PrepareContext(ctx, getOneCourse); err != nil {
+		return nil, fmt.Errorf("error preparing query GetOneCourse: %w", err)
 	}
 	if q.updateCourseStmt, err = db.PrepareContext(ctx, updateCourse); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateCourse: %w", err)
@@ -39,9 +45,19 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing createCourseStmt: %w", cerr)
 		}
 	}
+	if q.deleteCourseStmt != nil {
+		if cerr := q.deleteCourseStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing deleteCourseStmt: %w", cerr)
+		}
+	}
 	if q.getAllCoursesStmt != nil {
 		if cerr := q.getAllCoursesStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getAllCoursesStmt: %w", cerr)
+		}
+	}
+	if q.getOneCourseStmt != nil {
+		if cerr := q.getOneCourseStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getOneCourseStmt: %w", cerr)
 		}
 	}
 	if q.updateCourseStmt != nil {
@@ -89,7 +105,9 @@ type Queries struct {
 	db                DBTX
 	tx                *sql.Tx
 	createCourseStmt  *sql.Stmt
+	deleteCourseStmt  *sql.Stmt
 	getAllCoursesStmt *sql.Stmt
+	getOneCourseStmt  *sql.Stmt
 	updateCourseStmt  *sql.Stmt
 }
 
@@ -98,7 +116,9 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		db:                tx,
 		tx:                tx,
 		createCourseStmt:  q.createCourseStmt,
+		deleteCourseStmt:  q.deleteCourseStmt,
 		getAllCoursesStmt: q.getAllCoursesStmt,
+		getOneCourseStmt:  q.getOneCourseStmt,
 		updateCourseStmt:  q.updateCourseStmt,
 	}
 }
