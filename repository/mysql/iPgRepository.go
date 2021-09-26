@@ -15,6 +15,9 @@ type Repository interface {
 	GetOneCourse(ctx context.Context, id int64) (entity.GetOneCourseRow, error)
 	UpdateCourse(ctx context.Context, arg *entity.UpdateCourseParams) error
 
+	// Course Category
+	GetOneCourseCategory(ctx context.Context, id int32) (entity.GetOneCourseCategoryRow, error)
+
 	//Tx
 	BeginTx(ctx context.Context) (*sql.Tx, error)
 	WithTx(tx *sql.Tx) *Queries

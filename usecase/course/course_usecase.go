@@ -68,6 +68,18 @@ func (u *usecase) Create(ctx context.Context, req *course.CourseCreateRequest) (
 
 // --- update course --- ///
 func (u *usecase) Update(ctx context.Context, req *course.CourseUpdateRequest) (err error) {
+	// check if course is exists
+	_, err = u.mysqlRepo.GetOneCourse(ctx, req.ID)
+	if err != nil {
+		return
+	}
+
+	// check if course category is exists
+	_, err = u.mysqlRepo.GetOneCourseCategory(ctx, req.CourseCategoryID)
+	if err != nil {
+		return
+	}
+
 	// arguments
 	updateCourseParams := &entity.UpdateCourseParams{
 		ID:               req.ID,
@@ -100,6 +112,7 @@ func (u *usecase) Delete(ctx context.Context, req *course.CourseDeleteRequest) (
 		DeletedAt: sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
 	}
 
+	// delete from database
 	err = u.mysqlRepo.DeleteCourse(ctx, deleteCourseParams)
 	if err != nil {
 		return

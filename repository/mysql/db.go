@@ -32,6 +32,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getOneCourseStmt, err = db.PrepareContext(ctx, getOneCourse); err != nil {
 		return nil, fmt.Errorf("error preparing query GetOneCourse: %w", err)
 	}
+	if q.getOneCourseCategoryStmt, err = db.PrepareContext(ctx, getOneCourseCategory); err != nil {
+		return nil, fmt.Errorf("error preparing query GetOneCourseCategory: %w", err)
+	}
 	if q.updateCourseStmt, err = db.PrepareContext(ctx, updateCourse); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateCourse: %w", err)
 	}
@@ -58,6 +61,11 @@ func (q *Queries) Close() error {
 	if q.getOneCourseStmt != nil {
 		if cerr := q.getOneCourseStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getOneCourseStmt: %w", cerr)
+		}
+	}
+	if q.getOneCourseCategoryStmt != nil {
+		if cerr := q.getOneCourseCategoryStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getOneCourseCategoryStmt: %w", cerr)
 		}
 	}
 	if q.updateCourseStmt != nil {
@@ -102,23 +110,25 @@ func (q *Queries) queryRow(ctx context.Context, stmt *sql.Stmt, query string, ar
 }
 
 type Queries struct {
-	db                DBTX
-	tx                *sql.Tx
-	createCourseStmt  *sql.Stmt
-	deleteCourseStmt  *sql.Stmt
-	getAllCoursesStmt *sql.Stmt
-	getOneCourseStmt  *sql.Stmt
-	updateCourseStmt  *sql.Stmt
+	db                       DBTX
+	tx                       *sql.Tx
+	createCourseStmt         *sql.Stmt
+	deleteCourseStmt         *sql.Stmt
+	getAllCoursesStmt        *sql.Stmt
+	getOneCourseStmt         *sql.Stmt
+	getOneCourseCategoryStmt *sql.Stmt
+	updateCourseStmt         *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 	return &Queries{
-		db:                tx,
-		tx:                tx,
-		createCourseStmt:  q.createCourseStmt,
-		deleteCourseStmt:  q.deleteCourseStmt,
-		getAllCoursesStmt: q.getAllCoursesStmt,
-		getOneCourseStmt:  q.getOneCourseStmt,
-		updateCourseStmt:  q.updateCourseStmt,
+		db:                       tx,
+		tx:                       tx,
+		createCourseStmt:         q.createCourseStmt,
+		deleteCourseStmt:         q.deleteCourseStmt,
+		getAllCoursesStmt:        q.getAllCoursesStmt,
+		getOneCourseStmt:         q.getOneCourseStmt,
+		getOneCourseCategoryStmt: q.getOneCourseCategoryStmt,
+		updateCourseStmt:         q.updateCourseStmt,
 	}
 }

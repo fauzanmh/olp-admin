@@ -5,5 +5,5 @@ import "fmt"
 type ErrorMessage error
 
 var (
-	ErrorMessageProductOutOfStock ErrorMessage = fmt.Errorf("product out of stock")
+	ErrorMessageCourseCategoryNotFound ErrorMessage = fmt.Errorf("course category not found")
 )
