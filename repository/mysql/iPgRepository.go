@@ -17,6 +17,7 @@ type Repository interface {
 
 	// Course Category
 	GetOneCourseCategory(ctx context.Context, id int32) (entity.GetOneCourseCategoryRow, error)
+	UpdateTotalUsed(ctx context.Context, id int32) error
 
 	// Statistic
 	GetTotalCourse(ctx context.Context) (int64, error)

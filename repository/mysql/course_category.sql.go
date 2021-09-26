@@ -22,3 +22,13 @@ func (q *Queries) GetOneCourseCategory(ctx context.Context, id int32) (entity.Ge
 	}
 	return i, err
 }
+
+const updateTotalUsed = `-- name: UpdateTotalUsed :exec
+UPDATE course_categories SET total_used = total_used+1
+WHERE id = ?
+`
+
+func (q *Queries) UpdateTotalUsed(ctx context.Context, id int32) error {
+	_, err := q.exec(ctx, q.updateTotalUsedStmt, updateTotalUsed, id)
+	return err
+}

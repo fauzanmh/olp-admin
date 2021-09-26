@@ -38,6 +38,7 @@ func (q *Queries) DeleteCourse(ctx context.Context, arg *entity.DeleteCoursePara
 const getAllCourses = `-- name: GetAllCourses :many
 SELECT id, course_category_id, name, description, price
 FROM courses
+WHERE deleted_at IS NULL
 `
 
 func (q *Queries) GetAllCourses(ctx context.Context) ([]entity.GetAllCoursesRow, error) {
