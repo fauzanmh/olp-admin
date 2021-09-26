@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/fauzanmh/online-store/constant"
+	"github.com/fauzanmh/olp-admin/constant"
 	"github.com/lib/pq"
 )
 
@@ -28,21 +28,21 @@ func PqError(err error) (int, error) {
 }
 
 var commonErrorMap = map[error]int{
-	constant.ErrorPgUserAlreadyExists:      http.StatusConflict,
-	constant.ErrorPgUserNotFound:           http.StatusNotFound,
-	constant.ErrorPgDataNotFound:           http.StatusBadRequest,
+	constant.ErrorMysqlUserAlreadyExists:   http.StatusConflict,
+	constant.ErrorMysqlUserNotFound:        http.StatusNotFound,
+	constant.ErrorMysqlDataNotFound:        http.StatusBadRequest,
 	constant.ErrorMessageProductOutOfStock: http.StatusBadRequest,
 }
 
 // CommonError is
 func CommonError(err error) (int, error) {
 	switch err {
-	case constant.ErrorPgUserAlreadyExists:
-		return commonErrorMap[constant.ErrorPgUserAlreadyExists], constant.ErrorPgUserAlreadyExists
-	case constant.ErrorPgUserNotFound:
-		return commonErrorMap[constant.ErrorPgUserNotFound], constant.ErrorPgUserNotFound
-	case constant.ErrorPgDataNotFound:
-		return commonErrorMap[constant.ErrorPgDataNotFound], constant.ErrorPgDataNotFound
+	case constant.ErrorMysqlUserAlreadyExists:
+		return commonErrorMap[constant.ErrorMysqlUserAlreadyExists], constant.ErrorMysqlUserAlreadyExists
+	case constant.ErrorMysqlUserNotFound:
+		return commonErrorMap[constant.ErrorMysqlUserNotFound], constant.ErrorMysqlUserNotFound
+	case constant.ErrorMysqlDataNotFound:
+		return commonErrorMap[constant.ErrorMysqlDataNotFound], constant.ErrorMysqlDataNotFound
 	case constant.ErrorMessageProductOutOfStock:
 		return commonErrorMap[constant.ErrorMessageProductOutOfStock], constant.ErrorMessageProductOutOfStock
 	}

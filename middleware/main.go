@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	appInit "github.com/fauzanmh/online-store/init"
+	appInit "github.com/fauzanmh/olp-admin/init"
 )
 
 // Middleware for

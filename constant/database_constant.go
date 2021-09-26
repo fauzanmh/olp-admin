@@ -2,10 +2,10 @@ package constant
 
 import "fmt"
 
-type ErrorPg error
+type ErrorMysql error
 
 var (
-	ErrorPgUserNotFound      ErrorPg = fmt.Errorf("user not found")
-	ErrorPgUserAlreadyExists ErrorPg = fmt.Errorf("user already exists")
-	ErrorPgDataNotFound      ErrorPg = fmt.Errorf("data not found")
+	ErrorMysqlUserNotFound      ErrorMysql = fmt.Errorf("user not found")
+	ErrorMysqlUserAlreadyExists ErrorMysql = fmt.Errorf("user already exists")
+	ErrorMysqlDataNotFound      ErrorMysql = fmt.Errorf("data not found")
 )
