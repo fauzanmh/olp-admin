@@ -9,8 +9,10 @@ import (
 
 	"github.com/fauzanmh/olp-admin/config"
 	_handler "github.com/fauzanmh/olp-admin/handler"
+	_msUser "github.com/fauzanmh/olp-admin/repository/adapter/user"
 	_mysqlRepo "github.com/fauzanmh/olp-admin/repository/mysql"
 	_usecaseCourse "github.com/fauzanmh/olp-admin/usecase/course"
+	_usecaseMember "github.com/fauzanmh/olp-admin/usecase/member"
 	_usecaseStatistic "github.com/fauzanmh/olp-admin/usecase/statistic"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -45,13 +47,18 @@ func main() {
 	}
 
 	// * repository
+	// database
 	mysqlRepo := _mysqlRepo.NewRepository(mysqlDB)
+	// adapter
+	userAdapter := _msUser.NewProviderUser(cfg)
 
 	// * usecase
 	// course usecase
 	courseUsecase := _usecaseCourse.NewCourseUseCase(cfg, mysqlRepo)
 	// statistic usecase
 	statisticUsecase := _usecaseStatistic.NewStatisticUseCase(cfg, mysqlRepo)
+	// member usecase
+	memberUsecase := _usecaseMember.NewMemberUseCase(cfg, mysqlRepo, userAdapter)
 
 	// Middleware
 	e.Use(appMiddleware.EchoCORS())
@@ -69,6 +76,8 @@ func main() {
 	_handler.NewCourseHandler(routerAPI, courseUsecase)
 	// statistic routes
 	_handler.NewStatisticHandler(routerAPI, statisticUsecase)
+	// member routes
+	_handler.NewMemberHandler(routerAPI, memberUsecase)
 
 	go runHTTPHandler(e, cfg)
 

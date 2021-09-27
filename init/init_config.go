@@ -28,6 +28,12 @@ type Config struct {
 			Dbname   string `mapstructure:"dbname"`
 		} `mapstructure:"mysql"`
 	} `mapstructure:"database"`
+	Microservice struct {
+		User struct {
+			BaseURL    string `mapstructure:"base_url"`
+			DeleteUser string `mapstructure:"delete_user"`
+		} `mapstructure:"user"`
+	} `mapstructure:"microservice"`
 }
 
 // setupMainConfig loads app config to viper
