@@ -21,14 +21,14 @@ main.json dan terakhir setting database mysql
         "mysql": {
             "host": "localhost",
             "port": "3306",
-            "dbname": "olp_auth",
+            "dbname": "olp",
             "user": "root",
             "password": ""
         }
     }
 
 setelah itu buka dan clone repo berikut
-https://github.com/fauzanmh/olp-auth
+https://github.com/fauzanmh/olp-user
 https://github.com/fauzanmh/olp-migration
 
 
